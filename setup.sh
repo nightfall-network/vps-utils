@@ -71,7 +71,7 @@ pterodactyl_custom_theme(){
 
 pterodactyl_dependencies(){
     echo -e "${lightpurple}[*] ${white}Descargando dependencias Y pterodactyl panel..."
-    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg python3-certbot-apache
+    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
     curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
@@ -131,7 +131,7 @@ repair_panel(){
 
 function delight_webserver(){
     echo -e "${lightpurple}[*] ${white}Instalando dependencias...\n"
-    apt -y install php8.1 php8.1-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} libapache2-mod-php python3-certbot-apache
+    apt -y install python3-certbot-apache
     echo -e "${lightpurple}[*] ${white}Dependencias instaladas con exit\n"
 
     echo -ne "${lightpurple}[*] ${white}Dominio del servidor:${lightpurple}"; read -p " " domain
