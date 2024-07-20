@@ -133,7 +133,7 @@ function delight_webserver(){
     cd ../../../../../../../../../../
     cd root
     echo -e "${lightpurple}[*] ${white}Instalando dependencias...\n"
-    apt -y install php8.1 php8.1-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} libapache2-mod-php python3-certbot-apache
+    apt -y install python3-certbot-apache
     echo -e "${lightpurple}[*] ${white}Dependencias instaladas con exit\n"
 
     echo -ne "${lightpurple}[*] ${white}Dominio del servidor:${lightpurple}"; read -p " " domain
