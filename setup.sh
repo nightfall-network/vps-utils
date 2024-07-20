@@ -191,7 +191,7 @@ function pterodactyl_webserver(){
   
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/index.php?request=$1 [QSA,NC,L]
 </VirtualHost>
 
 <VirtualHost *:443>
