@@ -85,6 +85,7 @@ pterodactyl_dependencies(){
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
     echo -e "${lightpurple}[*] ${white}Dependecias y pterodactyl panel descargado con exito!"
+    choosen_options;
 }
 
 wings_dependencies(){
@@ -95,7 +96,7 @@ wings_dependencies(){
     curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
     sudo chmod u+x /usr/local/bin/wings
     echo -e "${lightpurple}[*] ${white}Docker instalado con exito!"
-    main;
+    choosen_options;
 }
 
 restore_backup(){
@@ -107,7 +108,7 @@ restore_backup(){
     yarn build:production
     sudo php artisan optimize:clear
     echo -e "${lightpurple}[*] ${white}backup cargado con exito!"
-    main;
+    choosen_options;
 }
 
 repair_panel(){
