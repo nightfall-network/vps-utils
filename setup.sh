@@ -129,134 +129,6 @@ repair_panel(){
     choosen_options;
 }
 
-function delight_webserver(){
-    echo -e "${lightpurple}[*] ${white}Instalando dependencias...\n"
-    apt -y install python3-certbot-apache
-    echo -e "${lightpurple}[*] ${white}Dependencias instaladas con exit\n"
-
-    echo -ne "${lightpurple}[*] ${white}Dominio del servidor:${lightpurple}"; read -p " " domain
-    
-    echo -ne "${lightpurple}[*] ${white}Creando certificado ssl...\n"
-    certbot certonly --apache -d $domain
-    certbot -d $domain --manual --preferred-challenges dns certonly
-    echo -ne "${lightpurple}[*] ${white}Certificado ssl creador con exito!\n"
-    
-    cd /etc/apache2/sites-available
-
-    echo "<VirtualHost *:80>
-  ServerName $domain
-  ErrorLog /var/www/delight/db/error.log
-  
-  RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/index.php?request=$1 [QSA,NC,L]
-</VirtualHost>
-
-<VirtualHost *:443>
-  ServerName $domain
-  DocumentRoot "/var/www/$webserver_folder"
-
-  AllowEncodedSlashes On
-  
-  php_value upload_max_filesize 100M
-  php_value post_max_size 100M
-
-  <Directory "/var/www/$webserver_folder">
-    Require all granted
-    AllowOverride all
-  </Directory>
-
-  SSLEngine on
-  SSLCertificateFile /etc/letsencrypt/live/$domain/fullchain.pem
-  SSLCertificateKeyFile /etc/letsencrypt/live/$domain/privkey.pem
-</VirtualHost> " > $webserver_file
-    
-    sudo ln -s /etc/apache2/sites-available/$webserver_file /etc/apache2/sites-enabled/$webserver_file
-    sudo a2enmod rewrite
-    sudo a2enmod ssl
-    sudo systemctl restart apache2
-    
-    echo -e "${lightpurple}[*] ${white}Delight webserver creado con exito!"
-    choosen_options;
-}
-
-function pterodactyl_webserver(){
-    cd /etc/nginx/sites-available/
-    echo -ne "${lightpurple}[*] ${white}Dominio:${lightpurple}"; read -p " " domain
-    echo "server_tokens off;
-
-server {
-    listen 80;
-    server_name $domain;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name $domain;
-
-    root /var/www/pterodactyl/public;
-    index index.php;
-
-    access_log /var/log/nginx/pterodactyl.app-access.log;
-    error_log  /var/log/nginx/pterodactyl.app-error.log error;
-
-    # allow larger file uploads and longer script runtimes
-    client_max_body_size 100m;
-    client_body_timeout 120s;
-
-    sendfile off;
-
-    # SSL Configuration - Replace the example $domain with your domain
-    ssl_certificate /etc/letsencrypt/live/$domain/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$domain/privkey.pem;
-    ssl_session_cache shared:SSL:10m;
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
-    ssl_prefer_server_ciphers on;
-
-    # See https://hstspreload.org/ before uncommenting the line below.
-    # add_header Strict-Transport-Security "max-age=15768000; preload;";
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Robots-Tag none;
-    add_header Content-Security-Policy "frame-ancestors 'self'";
-    add_header X-Frame-Options DENY;
-    add_header Referrer-Policy same-origin;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param HTTP_PROXY "";
-        fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
-        fastcgi_connect_timeout 300;
-        fastcgi_send_timeout 300;
-        fastcgi_read_timeout 300;
-        include /etc/nginx/fastcgi_params;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}" > pterodactyl.conf
-
-    sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
-
-    sudo systemctl restart nginx
-    echo -e "${lightpurple}[*] ${white}Delight webserver creado con exit!"
-    choosen_options;
-}
-
 function create_ssl_certificate(){
     echo -ne "${lightpurple}[*] ${white}Dominio:${lightpurple}"; read -p " " domain
     
@@ -282,24 +154,20 @@ function choosen_options(){
     echo -e "${lightpurple}a) ${white}Instalar Tema Personalizado de Pterodactyl"
     echo -e "${lightpurple}b) ${white}Instalar Panel ${gray}(Panel & Dependencias)"
     echo -e "${lightpurple}c) ${white}Instalar Wings ${gray}(Dependencias)"
-    echo -e "${lightpurple}d) ${white}Instalar Pterodactyl Webserver${gray}(setup)"
     echo -e "${lightpurple}e) ${white}Crear Certificado ssl"
-    echo -e "${lightpurple}f) ${white}Cargar Backup"
-    echo -e "${lightpurple}g) ${white}Reparar Panel"
-    echo -e "${lightpurple}h) ${white}Pagina Web${gray}(Apache Dependencias && Setup)"
-    echo -e "${lightpurple}i) ${white}Salir"
+    echo -e "${lightpurple}d) ${white}Cargar Backup"
+    echo -e "${lightpurple}f) ${white}Reparar Panel"
+    echo -e "${lightpurple}g) ${white}Salir"
   	echo -e ""
     echo -ne "${lightpurple}[*] ${white}Selecciona una opción:${lightpurple}"; read -p " " opt
     case $opt in
         [Aa1]* )pterodactyl_custom_theme;;
         [Bb2]* )pterodactyl_dependencies;;
         [Cc3]* )wings_dependencies;;
-        [Dd4]* )pterodactyl_webserver;;
-        [Ee5]* )create_ssl_certificate;;
-        [Ff6]* )restore_backup;;
-        [Gg7]* )repair_panel;;
-        [Hh8]* )delight_webserver;;
-        [Ii9]* )ctrl_c;;
+        [Dd4]* )create_ssl_certificate;;
+        [Ee5]* )restore_backup;;
+        [Ff6]* )repair_panel;;
+        [Gg7]* )ctrl_c;;
         * )invalid_option;;
     esac
 }
