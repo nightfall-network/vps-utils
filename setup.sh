@@ -72,7 +72,7 @@ pterodactyl_custom_theme(){
 
 pterodactyl_dependencies(){
     echo -e "${lightpurple}[*] ${white}Descargando dependencias Y pterodactyl panel..."
-    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg python3-certbot-apache
+    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
     curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
@@ -307,7 +307,7 @@ function create_ssl_certificate(){
     echo -ne "${lightpurple}[*] ${white}Dominio:${lightpurple}"; read -p " " domain
     
     echo -ne "${lightpurple}[*] ${white}Creando certificado ssl...\n"
-    certbot certonly --apache -d $domain
+    certbot certonly --nginx -d $domain
     certbot -d $domain --manual --preferred-challenges dns certonly
     echo -ne "${lightpurple}[*] ${white}Certificado ssl creador con exito!"
     choosen_options;
@@ -332,7 +332,7 @@ function choosen_options(){
     echo -e "${lightpurple}e) ${white}Crear Certificado ssl"
     echo -e "${lightpurple}f) ${white}Cargar Backup"
     echo -e "${lightpurple}g) ${white}Reparar Panel"
-    echo -e "${lightpurple}h) ${white}Pagina Web${gray}(Apache Dependencias && Setup)"
+    echo -e "${lightpurple}h) ${white}Delight Pagina Web${gray}(Nginx Dependencias && Setup)"
     echo -e "${lightpurple}i) ${white}Salir"
   	echo -e ""
     echo -ne "${lightpurple}[*] ${white}Selecciona una opción:${lightpurple}"; read -p " " opt
