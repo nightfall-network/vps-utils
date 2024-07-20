@@ -71,7 +71,7 @@ pterodactyl_custom_theme(){
 
 pterodactyl_dependencies(){
     echo -e "${lightpurple}[*] ${white}Descargando dependencias Y pterodactyl panel..."
-    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg python3-certbot-apache
+    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
     curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
