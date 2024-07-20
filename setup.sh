@@ -151,6 +151,8 @@ function delight_webserver(){
   
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^/?(.*) https://%{SERVER_NAME}/index.php?request=$1 [QSA,NC,L]
 </VirtualHost>
 
@@ -164,8 +166,10 @@ function delight_webserver(){
   php_value post_max_size 100M
 
   <Directory "/var/www/$webserver_folder">
-    Require all granted
-    AllowOverride all
+    Options FollowSymLinks Indexes
+	AllowOverride None 
+	Order deny,allow 
+	deny from all 
   </Directory>
 
   SSLEngine on
@@ -191,7 +195,7 @@ function pterodactyl_webserver(){
   
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/index.php?request=$1 [QSA,NC,L]
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
 </VirtualHost>
 
 <VirtualHost *:443>
