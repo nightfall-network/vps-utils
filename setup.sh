@@ -146,6 +146,7 @@ function delight_webserver(){
 
     echo "<VirtualHost *:80>
   ServerName $domain
+  ErrorLog /var/www/delight/db/error.log
   
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
