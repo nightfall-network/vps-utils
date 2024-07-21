@@ -81,9 +81,6 @@ pterodactyl_dependencies(){
     apt update
     sudo apt install -y python3-certbot-apache libapache2-mod-php
     apt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server apache2 tar unzip git redis-server
-    sudo systemctl enable --now apache2
-    a2dissite 000-default.conf
-    sudo systemctl restart apache2
 
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -215,6 +212,8 @@ function pterodactyl_webserver(){
 " > pterodactyl.conf
 
     sudo ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
+    
+    a2dissite 000-default.conf
 
     sudo a2enmod rewrite
 
@@ -227,7 +226,6 @@ function pterodactyl_webserver(){
 
 function create_ssl_certificate(){
     echo -ne "${lightpurple}[*] ${white}Dominio:${lightpurple}"; read -p " " domain
-    
     echo -ne "${lightpurple}[*] ${white}Creando certificado ssl...\n"
     certbot certonly --apache -d $domain
     certbot -d $domain --manual --preferred-challenges dns certonly
