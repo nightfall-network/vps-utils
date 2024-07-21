@@ -55,7 +55,7 @@ pterodactyl_custom_theme(){
     mv favicon-96x96.png /var/www/pterodactyl/public/favicons/favicon-96x96.png
     cd /var/www/pterodactyl
 
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_21.x | sudo -E bash -
     apt update
     apt install -y nodejs
 
@@ -142,6 +142,10 @@ function delight_webserver(){
     certbot -d $domain --manual --preferred-challenges dns certonly
     echo -ne "${lightpurple}[*] ${white}Certificado ssl creador con exito!\n"
 
+    cd /var/www/
+    git clone $webserver_github
+    mv delight-webserver $webserver_folder    
+
     cd /etc/apache2/sites-available
 
     echo "<VirtualHost *:80>
@@ -159,11 +163,32 @@ function delight_webserver(){
   
   php_value upload_max_filesize 100M
   php_value post_max_size 100M
-  <Directory "/var/www/$webserver_folder">
-    Options -Indexes FollowSymLinks
-    AllowOverride None
+
+  <Directory /var/www/$webserver_folder>
     Require all granted
+    AllowOverride all
   </Directory>
+  <Directory /var/www/$webserver_folder/db>
+    Require all denied
+    AllowOverride all
+  </Directory>
+  <Directory /var/www/$webserver_folder/discord>
+    Require all denied
+    AllowOverride all
+  </Directory>
+  <Directory /var/www/$webserver_folder/inc>
+    Require all denied
+    AllowOverride all
+  </Directory>
+  <Directory /var/www/$webserver_folder/utils>
+    Require all denied
+    AllowOverride all
+  </Directory>
+  <Directory /var/www/$webserver_folder/view>
+    Require all denied
+    AllowOverride all
+  </Directory>
+
   SSLEngine on
   SSLCertificateFile /etc/letsencrypt/live/$domain/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/$domain/privkey.pem
