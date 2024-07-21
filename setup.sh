@@ -79,7 +79,6 @@ pterodactyl_dependencies(){
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
     curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
     apt update
-    sudo apt install -y python3-certbot-apache libapache2-mod-php
     apt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server apache2 tar unzip git redis-server
 
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
@@ -225,6 +224,7 @@ function pterodactyl_webserver(){
 }
 
 function create_ssl_certificate(){
+    sudo apt install -y python3-certbot-apache libapache2-mod-php
     echo -ne "${lightpurple}[*] ${white}Dominio:${lightpurple}"; read -p " " domain
     echo -ne "${lightpurple}[*] ${white}Creando certificado ssl...\n"
     certbot certonly --apache -d $domain
