@@ -55,7 +55,7 @@ pterodactyl_custom_theme(){
     mv favicon-96x96.png /var/www/pterodactyl/public/favicons/favicon-96x96.png
     cd /var/www/pterodactyl
 
-    curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
     node -v
 
