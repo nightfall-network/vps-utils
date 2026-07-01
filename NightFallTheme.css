@@ -7,6 +7,14 @@ html {
   background-color: transparent;
 }
 
+body {
+  background-color: transparent;
+}
+
+.bg-neutral-800 {
+  background-color: transparent;
+}
+
 .iyXSLu > a:active, .iyXSLu > button:active, .iyXSLu > .navigation-link:active, .iyXSLu > a:hover, .iyXSLu > button:hover, .iyXSLu > .navigation-link:hover, .iyXSLu > a.active, .iyXSLu > button.active, .iyXSLu > .navigation-link.active {
   box-shadow: rgb(144, 8, 178) 0px -2px inset;
 }
